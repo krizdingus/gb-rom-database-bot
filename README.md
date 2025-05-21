@@ -2,12 +2,12 @@
 
 ## Introduction
 
-Welcome to GB ROM Database Bot. Inspired by Catskull’s GB Rom Database, I wanted to improve on its UI, but by the time I got around to doing it I found that like 39 other people had already done so, including Catskull himself. So I figured I had better try something different. This bot brings the ROM database into Discord with intuitive slash commands, fuzzy title matching, rich embeds, and filters for region, mapper type, color/SGB support, battery/timer/rumble features, and more—so you can get the details you need instantly, right where you chat.
+Welcome to GB ROM Database Bot. Inspired by Catskull's GB Rom Database, I wanted to improve on its UI, but by the time I got around to doing it I found that like 39 other people had already done so, including Catskull himself. So I figured I had better try something different. This bot brings the ROM database into Discord with intuitive slash commands, fuzzy title matching, rich embeds, and filters for region, mapper type, color/SGB support, battery/timer/rumble features, and more—so you can get the details you need instantly, right where you chat.
 
 ## History & Development
 
 1. **Data Sourcing**: I started by pulling the No-Intro naming conventions from the Myrient archive using a Python script (`fetch_gb_roms.py`). That script generates `rom-list.json` with all 4,469 entries.
-2. **Indexing & Fuzzy Search**: I integrated Fuse.js to allow fuzzy matching—typos, partial titles, or “zelda” vs “dr mario” all just work.
+2. **Indexing & Fuzzy Search**: I integrated Fuse.js to allow fuzzy matching—typos, partial titles, or "zelda" vs "dr mario" all just work.
 3. **Flag & Feature Logic**: Handling region tags, unlicensed/pirate labels, multi-region titles, and inserting zero-width spaces after periods required some sneaky regex and utility functions in `utils/regions.js`.
 4. **Modular Architecture**: The codebase splits responsibilities cleanly:
 
@@ -16,7 +16,7 @@ Welcome to GB ROM Database Bot. Inspired by Catskull’s GB Rom Database, I want
    - `handlers/search.js` and `handlers/buttons.js` process interactions, pagination, and back-navigation.
    - `scripts/update-roms.js` wraps the Python fetch script for manual `npm run update-roms` updates and hot-reloads the index.
 
-5. **Iterative Refinement**: Over many rounds, we added filters for mapper types, CGB/SGB support, battery/timer/rumble flags, sorting options, and improved title normalization (reordering “`, The`” conventions).
+5. **Iterative Refinement**: Over many rounds, I added filters for mapper types, CGB/SGB support, battery/timer/rumble flags, sorting options, and improved title normalization (reordering "`, The`" conventions).
 
 ## Features
 
@@ -92,4 +92,8 @@ Pull requests welcome! Run `npm run lint` and `npm run format` before submitting
 
 ---
 
-\*Created by krizdingus (Kris Williams) — GitHub: [https://github.com/krizdingus](https://github.com/krizdingus) | Website: [https://krizdingus.com](https://krizdingus.com) | Instagram: [https://www.instagram.com/krizdingus/](https://www.instagram.com/krizdingus/)
+Created by krizdingus (Kris Williams)
+
+GitHub: https://github.com/krizdingus
+Website: https://krizdingus.com
+Instagram: https://www.instagram.com/krizdingus/
