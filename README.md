@@ -94,6 +94,6 @@ Pull requests welcome! Run `npm run lint` and `npm run format` before submitting
 
 Created by krizdingus (Kris Williams)
 
-GitHub: https://github.com/krizdingus
-Website: https://krizdingus.com
-Instagram: https://www.instagram.com/krizdingus/
+- GitHub: https://github.com/krizdingus
+- Website: https://krizdingus.com
+- Instagram: https://www.instagram.com/krizdingus/
