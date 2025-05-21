@@ -4,6 +4,20 @@
 
 Welcome to GB ROM Database Bot. Inspired by Catskull's GB Rom Database, I wanted to improve on its UI, but by the time I got around to doing it I found that like 39 other people had already done so, including Catskull himself. So I figured I had better try something different. This bot brings the ROM database into Discord with intuitive slash commands, fuzzy title matching, rich embeds, and filters for region, mapper type, color/SGB support, battery/timer/rumble features, and more—so you can get the details you need instantly, right where you chat.
 
+## Table of Contents
+
+- [History & Development](#history--development)
+- [Features](#features)
+- [Commands](#commands)
+- [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Installation & Setup](#installation--setup)
+- [Manual Database Updates](#manual-database-updates)
+- [Usage Examples](#usage-examples)
+- [Development Roadmap](#development-roadmap)
+- [Data Sources](#data-sources)
+- [Contributing](#contributing)
+
 ## History & Development
 
 1. **Data Sourcing**: I started by pulling the No-Intro naming conventions from the Myrient archive using a Python script (`fetch_gb_roms.py`). That script generates `rom-list.json` with all 4,469 entries.
@@ -80,6 +94,51 @@ This wraps `fetch_gb_roms.py`, updates `rom-list.json`, and hot-reloads the in-m
 /dmgdb search query:Pokemon region:Europe mapper:MBC3 battery:true
 /dmgdb random cgb:GB/CBG sgb:false
 ```
+
+## Development Roadmap
+
+Below is a roughly sketched, wildly optimistic roadmap because who the hell knows when I'll get around to doing it?
+
+### 1. Double-down on Chat-First Magic
+
+- **Natural-Language Queries**  
+  Let the bot understand "Hey, show me all Color-only Zelda games" without forcing people to remember flags and colons.
+- **Interactive Filter Prompts**  
+  After `/dmgdb query Mario`, follow up with "Found 12 hits—wanna narrow by region, mapper, or features?" and let them click buttons instead of googling.
+- **Saved Searches & Watchlists**
+  - `/dmgdb save favorites` to stash your go-to filters.
+  - `/dmgdb watch Pokémon` so the bot DM's you whenever something new sneaks into the database.
+
+### 2. Ecosystem Extras (For the Brave)
+
+- **Optional Web Companion**  
+  A static site (React + the same JSON index) for people who think Discord is "that Skype thing my kid uses."
+- **Analytics Dashboard**  
+  Track which games trigger the most existential crises in slash-command land—hook it up to a simple Google Sheet or tiny Express app.
+- **Auto-Updating Database**  
+  Schedule the Python fetch script via GitHub Actions so your ROM list refreshes while you're busy pretending you're still a millennial.
+
+### 3. UX Tweaks for Chat Bots
+
+- **Ephemeral vs. Shared**  
+  Keep lookups private by default—only humble-brag when people actually care.
+- **Conversational, Not Form-Filling**  
+  Break massive commands into bite-sized Q&A with buttons. Fewer flags, more fun.
+- **On-Demand Help**  
+  `/dmgdb help filters` should feel like having a patient friend explain all the nerdy options without rolling their eyes.
+
+### 4. Polish & Power-User Goodies
+
+- **Advanced Sorting**  
+  `sort_by:release_date`, `sort_by:romSize`, or even "most absurd title length."
+- **Localization**  
+  Let people query in mangled English or Spanish—because why not?
+- **Mapper-Only Mode**  
+  Queue up lists of MBC3 games, lump all those cryptic "Unknown (0x…)" mappers into one "Unknown" bucket.
+
+---
+
+> Disclaimer: None of this is set in stone. If you're a millennial who logged into Discord once in 2018, feel free to ignore half of it.
 
 ## Data Sources
 

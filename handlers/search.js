@@ -163,7 +163,7 @@ async function createRomEmbed(rom) {
   const titleWithEmoji = `${regionEmoji}   ${cleanedTitle.replace(/\./g, '.' + String.fromCharCode(8203))}`;
 
   const embed = new EmbedBuilder()
-    .setColor(0xA7396A)
+    .setColor(0xa7396a)
     .setTitle(titleWithEmoji)
     .setDescription(`ROM Title: ${rom.title || 'Unknown'}\nFilename: ${rom.filename || 'Unknown'}`)
     .setTimestamp();
@@ -439,7 +439,7 @@ async function handleGameBoyBotSearch(interaction) {
         }
         if (cgb === 'gb') return flag === 'DMG';
         if (cgb === 'cgb') return flag === 'CGB Only';
-        if (cgb === 'both') return flag === 'DMG+CGB';  // Only show games that work on both GB and CGB
+        if (cgb === 'both') return flag === 'DMG+CGB'; // Only show games that work on both GB and CGB
         return false;
       });
     }
@@ -601,7 +601,7 @@ async function handleRandomGame(interaction) {
         }
         if (cgb === 'gb') return flag === 'DMG';
         if (cgb === 'cgb') return flag === 'CGB Only';
-        if (cgb === 'both') return flag === 'DMG+CGB';  // Only show games that work on both GB and CGB
+        if (cgb === 'both') return flag === 'DMG+CGB'; // Only show games that work on both GB and CGB
         return false;
       });
     }
