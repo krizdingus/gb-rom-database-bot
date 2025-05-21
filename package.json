@@ -1,0 +1,42 @@
+{
+  "name": "gb-rom-database-bot",
+  "version": "1.0.0",
+  "description": "Discord bot for looking up Game Boy ROM information in a comprehensive database",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "deploy": "node deploy.js",
+    "dev": "nodemon index.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "update-roms": "node scripts/update-roms.js"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "gameboy",
+    "rom"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/rest": "^1.5.0",
+    "discord-api-types": "^0.37.37",
+    "discord.js": "^14.8.0",
+    "dotenv": "^16.5.0",
+    "fuse.js": "^6.6.2",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.27.0",
+    "eslint": "^9.27.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.0",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.1.0",
+    "nodemon": "^2.0.22",
+    "prettier": "^3.5.3",
+    "typescript-eslint": "^8.32.1"
+  }
+}
