@@ -639,7 +639,20 @@ async function handleRandomGame(interaction) {
     // pick one at random
     const randomRom = filtered[Math.floor(Math.random() * filtered.length)];
     const embed = await createRomEmbed(randomRom);
-    await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+
+    // Create the share button
+    const shareButton = new ButtonBuilder()
+      .setCustomId(`share_${Date.now()}`)
+      .setLabel('Share to Channel')
+      .setStyle(ButtonStyle.Primary);
+
+    const row = new ActionRowBuilder().addComponents(shareButton);
+
+    await interaction.reply({
+      embeds: [embed],
+      components: [row],
+      flags: MessageFlags.Ephemeral,
+    });
   } catch (error) {
     console.error('Error in handleRandomGame:', error);
     await interaction.reply({
