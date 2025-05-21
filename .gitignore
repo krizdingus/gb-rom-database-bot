@@ -32,4 +32,8 @@ coverage
 
 # OS
 .DS_Store
-Thumbs.db 
+Thumbs.db
+
+# Project specific
+rom-list copy.json
+example-rom-list.json 
