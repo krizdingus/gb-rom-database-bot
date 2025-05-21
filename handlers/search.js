@@ -163,7 +163,7 @@ async function createRomEmbed(rom) {
   const titleWithEmoji = `${regionEmoji}   ${cleanedTitle.replace(/\./g, '.' + String.fromCharCode(8203))}`;
 
   const embed = new EmbedBuilder()
-    .setColor(0x0099ff)
+    .setColor(0xA7396A)
     .setTitle(titleWithEmoji)
     .setDescription(`ROM Title: ${rom.title || 'Unknown'}\nFilename: ${rom.filename || 'Unknown'}`)
     .setTimestamp();
