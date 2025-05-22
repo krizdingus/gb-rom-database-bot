@@ -21,7 +21,7 @@ Welcome to GB ROM Database Bot. Inspired by Catskull's GB Rom Database, I wanted
 
 ## History & Development
 
-1. **Data Sourcing**: I started by pulling the No-Intro naming conventions from the Myrient archive using a Python script (`fetch_gb_roms.py`). That script generates `rom-list.json` with all 4,469 entries.
+1. **Data Sourcing**: I started by scanning the No-Intro Game Boy game dump headers from the Myrient archive using a Python script (fetch_gb_roms.py). That script generates rom-list.json.
 2. **Indexing & Fuzzy Search**: I integrated Fuse.js to allow fuzzy matching—typos, partial titles, or "zelda" vs "dr mario" all just work.
 3. **Flag & Feature Logic**: Handling region tags, unlicensed/pirate labels, multi-region titles, and inserting zero-width spaces after periods required some sneaky regex and utility functions in `utils/regions.js`.
 4. **Modular Architecture**: The codebase splits responsibilities cleanly:
