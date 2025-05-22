@@ -35,11 +35,3 @@ client.login(process.env.BOT_TOKEN).catch(error => {
   console.error('Login error:', error);
   process.exit(4);
 });
-
-async function updateResultsPage(interaction, responseText, actionRows) {
-  if (typeof interaction.update === 'function') {
-    await interaction.update({ content: responseText, components: actionRows });
-  } else {
-    await interaction.editReply({ content: responseText, components: actionRows });
-  }
-}

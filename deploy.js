@@ -52,16 +52,12 @@ if (!clientId) {
 
     // Register commands based on whether GUILD_ID is set
     if (process.env.GUILD_ID) {
-      await rest.put(
-        Routes.applicationGuildCommands(clientId, process.env.GUILD_ID),
-        { body: commands }
-      );
+      await rest.put(Routes.applicationGuildCommands(clientId, process.env.GUILD_ID), {
+        body: commands,
+      });
       console.log(`Registered commands to guild ${process.env.GUILD_ID}`);
     } else {
-      await rest.put(
-        Routes.applicationCommands(clientId),
-        { body: commands }
-      );
+      await rest.put(Routes.applicationCommands(clientId), { body: commands });
       console.log('Registered commands globally');
     }
 
