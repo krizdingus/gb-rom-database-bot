@@ -116,7 +116,7 @@ Below is a roughly sketched, wildly optimistic roadmap because who the hell know
 - **Analytics Dashboard**  
   Track which games trigger the most existential crises in slash-command land—hook it up to a simple Google Sheet or tiny Express app.
 - **Auto-Updating Database**  
-  Schedule the Python fetch script via GitHub Actions so your ROM list refreshes while you're busy pretending you're still a millennial.
+  Schedule the Python fetch script via GitHub Actions so your ROM list refreshes while you're busy pretending you watch DBZ AMVs.
 
 ### 3. UX Tweaks for Chat Bots
 
