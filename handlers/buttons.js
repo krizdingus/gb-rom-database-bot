@@ -17,7 +17,10 @@ async function handleButtonInteraction(interaction) {
   const userId = interaction.user.id;
   const search = activeSearches.get(userId);
 
-  if (!search) {
+  // Reset timestamp on any interaction before checking expiration
+  if (search) {
+    search.timestamp = Date.now();
+  } else {
     await interaction.reply({
       content: 'Your search has expired. Please start a new search.',
       ephemeral: true,
@@ -28,7 +31,7 @@ async function handleButtonInteraction(interaction) {
   const buttonId = interaction.customId;
 
   // Handle share button
-  if (buttonId.startsWith('share_')) {
+  if (buttonId === 'share_to_channel') {
     try {
       // Get the content of the message with the embed
       const embed = interaction.message.embeds[0];
@@ -119,7 +122,7 @@ async function handleButtonInteraction(interaction) {
       // Create a row with both Share and Back buttons
       const buttonRow = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
-          .setCustomId(`share_${Date.now()}`) // Simple ID, no need to include user ID
+          .setCustomId('share_to_channel')
           .setLabel('Share to Channel')
           .setStyle(ButtonStyle.Primary),
         new ButtonBuilder()

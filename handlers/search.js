@@ -20,10 +20,10 @@ const GB_BASE_URL = `https://raw.githubusercontent.com/libretro-thumbnails/Ninte
 const GBC_BASE_URL = `https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Game_Boy_Color/${GBC_SHA}/Named_Boxarts`;
 
 // Configuration constants
-const SEARCH_EXPIRATION_TIME = 60000; // 1 minute
+const SEARCH_EXPIRATION_TIME = 70000; // 70 seconds
 const CACHE_EXPIRATION_TIME = 10 * 60 * 1000; // 10 minutes
 const GAMES_PER_PAGE = 4; // Maximum games per page (Discord allows max 5 action rows)
-const CLEANUP_INTERVAL = 30000; // Run cleanup every 30 seconds
+const CLEANUP_INTERVAL = 90000; // Run cleanup every 90 seconds
 const DEBUG = true; // Set to true to enable debug logging
 
 // Global collections for search state
@@ -242,6 +242,9 @@ async function createRomEmbed(rom) {
  * @param {string} query - Original search query
  */
 async function updateResultsPage(interaction, search, query) {
+  // Reset the timestamp on any interaction
+  search.timestamp = Date.now();
+
   // Calculate the start and end indices for the current page
   const startIdx = (search.currentPage - 1) * GAMES_PER_PAGE;
   const endIdx = Math.min(startIdx + GAMES_PER_PAGE, search.results.length);
@@ -476,31 +479,34 @@ async function handleGameBoyBotSearch(interaction) {
       results.sort((a, b) => String(a[sortBy] || '').localeCompare(String(b[sortBy] || '')));
     }
 
-    // If only one result, show it directly
+    // If we have exactly one result, show it directly
     if (results.length === 1) {
       const embed = await createRomEmbed(results[0]);
 
-      // Store the search state with current timestamp
+      // Create a row with both Share and Back buttons
+      const buttonRow = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setCustomId('share_to_channel')
+          .setLabel('Share to Channel')
+          .setStyle(ButtonStyle.Primary),
+        new ButtonBuilder()
+          .setCustomId('back_to_results')
+          .setLabel('Back to Results')
+          .setStyle(ButtonStyle.Secondary)
+      );
+
+      // Store the search state even for single results
       const search = {
         results,
         currentPage: 1,
-        timestamp: Date.now(),
         query: rawQuery,
-        totalPages: 1,
+        timestamp: Date.now(),
       };
       activeSearches.set(interaction.user.id, search);
 
       await interaction.reply({
         embeds: [embed],
-        components: [
-          new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-              .setCustomId('share_to_channel')
-              .setLabel('Share to Channel')
-              .setStyle(ButtonStyle.Primary)
-          ),
-        ],
-        flags: MessageFlags.Ephemeral,
+        components: [buttonRow],
       });
       return;
     }
@@ -642,7 +648,7 @@ async function handleRandomGame(interaction) {
 
     // Create the share button
     const shareButton = new ButtonBuilder()
-      .setCustomId(`share_${Date.now()}`)
+      .setCustomId('share_to_channel')
       .setLabel('Share to Channel')
       .setStyle(ButtonStyle.Primary);
 
