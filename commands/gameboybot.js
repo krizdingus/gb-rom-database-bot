@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const { handleGameBoyBotSearch, handleRandomGame } = require('../handlers/search');
+const { version } = require('../package.json');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -205,7 +206,7 @@ module.exports = {
             '• Box art from libretro-thumbnails:\n' +
             '  • Game Boy: <https://github.com/libretro-thumbnails/Nintendo_-_Game_Boy>\n' +
             '  • Game Boy Color: <https://github.com/libretro-thumbnails/Nintendo_-_Game_Boy_Color>\n\n' +
-            '**Version:** 1.0.0\n' +
+            `**Version:** ${version}\n` +
             '**Author:** krizdingus\n' +
             '**Website:** <https://krizdingus.com>\n' +
             '**GitHub:** <https://github.com/krizdingus/discord-gb-rom-bot>\n' +
