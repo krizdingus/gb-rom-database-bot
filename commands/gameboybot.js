@@ -209,7 +209,7 @@ module.exports = {
             `**Version:** ${version}\n` +
             '**Author:** krizdingus\n' +
             '**Website:** <https://krizdingus.com>\n' +
-            '**GitHub:** <https://github.com/krizdingus/discord-gb-rom-bot>\n' +
+            '**GitHub:** <https://github.com/krizdingus/gb-rom-database-bot>\n' +
             '**Instagram:** <https://www.instagram.com/krizdingus/>\n' +
             '**License:** MIT',
           flags: MessageFlags.Ephemeral,
