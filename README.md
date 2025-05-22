@@ -79,6 +79,11 @@ Welcome to GB ROM Database Bot. Inspired by Catskull's GB Rom Database, I wanted
 
 On first run, if `rom-list.json` is missing, the bot will auto-generate it. If generation fails, the process exits to avoid running without data.
 
+### Deployment Modes
+
+- **With `GUILD_ID` set**: Commands are registered instantly in that specific server, which is ideal for testing and development.
+- **Without `GUILD_ID`**: Commands are registered globally, making them available on any server where the bot is invited. Note that global command registration may take up to an hour to propagate across Discord's servers.
+
 ## Manual Database Updates
 
 To fetch and reload the latest ROM list anytime:

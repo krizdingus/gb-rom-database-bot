@@ -20,11 +20,6 @@ if (!clientId) {
   process.exit(1);
 }
 
-if (!guildId) {
-  console.error('[Config] GUILD_ID is not set. Please add GUILD_ID to your .env');
-  process.exit(1);
-}
-
 // Register the commands
 (async () => {
   console.log('Starting slash command registration...');
@@ -55,12 +50,22 @@ if (!guildId) {
   try {
     console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
-    // The put method is used to fully refresh all commands in the guild with the current set
-    const data = await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
-      body: commands,
-    });
+    // Register commands based on whether GUILD_ID is set
+    if (process.env.GUILD_ID) {
+      await rest.put(
+        Routes.applicationGuildCommands(clientId, process.env.GUILD_ID),
+        { body: commands }
+      );
+      console.log(`Registered commands to guild ${process.env.GUILD_ID}`);
+    } else {
+      await rest.put(
+        Routes.applicationCommands(clientId),
+        { body: commands }
+      );
+      console.log('Registered commands globally');
+    }
 
-    console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+    console.log(`Successfully reloaded ${commands.length} application (/) commands.`);
   } catch (error) {
     console.error('Failed to register slash commands:', error);
     process.exit(1);
