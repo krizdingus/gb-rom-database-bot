@@ -81,7 +81,7 @@ if (!clientId) {
       code: error.code,
       status: error.status,
       method: error.method,
-      url: error.url
+      url: error.url,
     });
     process.exit(1);
   }
