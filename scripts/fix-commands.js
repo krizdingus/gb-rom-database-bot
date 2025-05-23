@@ -14,7 +14,7 @@ if (!token || !clientId) {
 }
 
 // Initialize REST client with rate limit handling
-const rest = new REST({ 
+const rest = new REST({
   version: '10',
   timeout: 15000, // 15 second timeout
 }).setToken(token);
@@ -26,7 +26,8 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 function loadCommands() {
   const commands = [];
   const commandsPath = path.join(__dirname, '..', 'commands');
-  const commandFiles = fs.readdirSync(commandsPath)
+  const commandFiles = fs
+    .readdirSync(commandsPath)
     .filter(file => file.endsWith('.js') && file !== 'deploy.js');
 
   for (const file of commandFiles) {
@@ -64,7 +65,7 @@ function loadCommands() {
         console.log(`[PROCESS] Processing guild: ${guild.name} (${guild.id})`);
         await rest.put(Routes.applicationGuildCommands(clientId, guild.id), { body: [] });
         console.log(`[SUCCESS] Cleared commands from ${guild.name}`);
-        
+
         // Add small delay to respect rate limits
         await delay(1000);
       } catch (error) {
@@ -88,12 +89,11 @@ function loadCommands() {
     console.log('\n[INFO] Important Notes:');
     console.log('1. Global commands may take up to 1 HOUR to appear in all servers');
     console.log('2. Your bot should now work in all current and future servers');
-    console.log('3. If commands don\'t appear immediately, please wait for Discord\'s propagation');
+    console.log("3. If commands don't appear immediately, please wait for Discord's propagation");
     console.log('\n[VERIFY] To verify:');
     console.log('1. Wait at least 1 hour');
     console.log('2. Try adding the bot to a new server');
     console.log('3. Check if commands appear in the new server');
-
   } catch (error) {
     console.error('\n[FATAL] Error:', error.message);
     if (error.code === 429) {
@@ -101,4 +101,4 @@ function loadCommands() {
     }
     process.exit(1);
   }
-})(); 
+})();

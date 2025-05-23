@@ -46,9 +46,8 @@ const rest = new REST({ version: '10' }).setToken(token);
         });
       }
     }
-
   } catch (error) {
     console.error('\n[ERROR] Failed to check commands:', error.message);
     process.exit(1);
   }
-})(); 
+})();
