@@ -62,6 +62,36 @@ Welcome to GB ROM Database Bot. Inspired by Catskull's GB Rom Database, I wanted
 
   - `fetch_gb_roms.py` — Python script to produce the ROM list
   - `update-roms.js` — Node wrapper to rerun Python script and reload data
+  - `fix-commands.js` — Cleanup tool for guild-specific commands
+  - `check-commands.js` — Verification tool for command registration status
+
+### Command Management Scripts
+
+The bot includes two utility scripts for managing Discord slash commands:
+
+#### `scripts/fix-commands.js`
+Use this script when:
+- Commands only appear in one server but not others
+- You've switched from guild-specific to global commands
+- You need to clean up old guild-specific commands
+
+Run it with:
+```bash
+node scripts/fix-commands.js
+```
+
+#### `scripts/check-commands.js`
+Use this script to:
+- Verify which commands are registered globally
+- Check for any remaining guild-specific commands
+- Debug command registration issues
+
+Run it with:
+```bash
+node scripts/check-commands.js
+```
+
+Note: Global commands may take up to 1 hour to propagate across Discord's servers.
 
 ## Prerequisites
 
