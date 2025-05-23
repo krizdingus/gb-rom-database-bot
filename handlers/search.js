@@ -644,16 +644,6 @@ async function handleRandomGame(interaction) {
 
     // pick one at random
     const randomRom = filtered[Math.floor(Math.random() * filtered.length)];
-
-    // Store the search state for the share button to work
-    const search = {
-      results: [randomRom], // Single result array
-      currentPage: 1,
-      query: 'random', // Indicate this was a random search
-      timestamp: Date.now(),
-    };
-    activeSearches.set(interaction.user.id, search);
-
     const embed = await createRomEmbed(randomRom);
 
     // Create the share button
