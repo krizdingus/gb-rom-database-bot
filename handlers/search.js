@@ -654,6 +654,15 @@ async function handleRandomGame(interaction) {
 
     const row = new ActionRowBuilder().addComponents(shareButton);
 
+    // Store search state for random game
+    const search = {
+      results: [randomRom],
+      currentPage: 1,
+      query: 'random',
+      timestamp: Date.now(),
+    };
+    activeSearches.set(interaction.user.id, search);
+
     await interaction.reply({
       embeds: [embed],
       components: [row],
