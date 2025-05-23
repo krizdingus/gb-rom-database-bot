@@ -1,6 +1,6 @@
 {
   "name": "gb-rom-database-bot",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Discord bot for looking up Game Boy ROM information in a comprehensive database",
   "main": "index.js",
   "scripts": {
