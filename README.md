@@ -14,7 +14,6 @@ Welcome to GB ROM Database Bot. Inspired by Catskull's GB Rom Database, I wanted
 - [Installation & Setup](#installation--setup)
 - [Manual Database Updates](#manual-database-updates)
 - [Usage Examples](#usage-examples)
-- [Test Server](#test-server)
 - [Development Roadmap](#development-roadmap)
 - [Data Sources](#data-sources)
 - [Contributing](#contributing)
@@ -136,15 +135,6 @@ This wraps `fetch_gb_roms.py`, updates `rom-list.json`, and hot-reloads the in-m
 /dmgdb search query:Pokemon region:Europe mapper:MBC3 battery:true
 /dmgdb random cgb:GB/CBG sgb:false
 ```
-
-## Test Server
-
-Want to try before you roll it out? Join my GB ROM Database Bot test server:
-
-**Invite link:** https://discord.gg/qT8AqnMHDF  
-**Server name:** GB ROM Database Test Server
-
-In there you can run any `/dmgdb` commands, experiment with filters, and see all the features in action without touching your main community. Feel free to break things—this is a playground!
 
 ## Development Roadmap
 
