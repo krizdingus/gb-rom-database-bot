@@ -104,6 +104,13 @@ function loadRomData() {
       return { success: false };
     }
 
+    // An empty list used to count as a successful load, which meant a failed fetch
+    // could leave the bot running with nothing to search
+    if (roms.length === 0) {
+      console.error('Error: ROM data is empty');
+      return { success: false };
+    }
+
     console.log(`Successfully loaded ${roms.length} ROM entries`);
 
     // Configure Fuse.js for fuzzy searching

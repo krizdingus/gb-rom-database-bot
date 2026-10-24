@@ -2,12 +2,11 @@
 
 const { spawn } = require('child_process');
 const path = require('path');
-const { loadRomData } = require('../loadRomData');
 
 // Get the absolute path to the Python script
 const scriptPath = path.join(__dirname, 'fetch_gb_roms.py');
 
-// Function to update ROMs and reload data
+// Function to update ROMs
 async function updateRoms() {
   console.log('Starting ROM update process...\n');
 
@@ -21,19 +20,17 @@ async function updateRoms() {
   return new Promise((resolve, reject) => {
     pythonProcess.on('close', code => {
       if (code === 0) {
-        console.log('\nPython script completed successfully. Reloading ROM data...');
-
-        // Reload the ROM data
-        const result = loadRomData();
-        if (result.success) {
-          console.log('ROM data reloaded successfully!');
-          resolve(true);
-        } else {
-          console.error('Failed to reload ROM data');
-          reject(new Error('Failed to reload ROM data'));
-        }
+        // This script is its own process, so it can't reload the running bot's
+        // in-memory index. Reloading here would only have reloaded data into a
+        // process that was about to exit.
+        console.log('\nPython script completed successfully. rom-list.json is up to date.');
+        console.log('The running bot still holds the old list. To pick up the new one:');
+        console.log("  - self-hosted: kill -HUP $(pgrep -f 'node index.js')");
+        console.log('  - hosted (Railway and friends): restart or redeploy the service');
+        resolve(true);
       } else {
         console.error(`\nPython script exited with code ${code}`);
+        console.error('rom-list.json was left as it was.');
         reject(new Error(`Python script failed with exit code ${code}`));
       }
     });

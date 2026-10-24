@@ -1,10 +1,6 @@
 // bot.js
 const { Client, GatewayIntentBits, Events, MessageFlags } = require('discord.js');
-const {
-  handleGameBoyBotSearch,
-  startCleanupInterval,
-  stopCleanupInterval,
-} = require('./handlers/search');
+const { reloadRomData, startCleanupInterval, stopCleanupInterval } = require('./handlers/search');
 const { handleButtonInteraction } = require('./handlers/buttons');
 const { execute } = require('./commands/gameboybot');
 
@@ -52,6 +48,12 @@ client.on(Events.InteractionCreate, async interaction => {
       return safeReplyError(interaction, err, 'Command handler');
     }
   }
+});
+
+// Reload rom-list.json in place: `npm run update-roms && kill -HUP $(pgrep -f 'node index.js')`
+process.on('SIGHUP', () => {
+  console.log('SIGHUP received, reloading ROM data...');
+  reloadRomData();
 });
 
 process.on('SIGINT', () => {

@@ -540,7 +540,7 @@ def main():
             logger.info(f"Loaded {len(urls)} URLs from config file")
         else:
             logger.error("Invalid config file or missing 'urls' key")
-            return
+            return 1
     else:
         # Default URLs
         base_urls = [
@@ -560,7 +560,16 @@ def main():
         print("\nFetching directory listings... (This may take a minute)")
         zip_files = fetch_directory_listings(urls, skip_bios=not args.include_bios)
         print(f"\nFound {len(zip_files)} total ZIP files\n")
-        
+
+        # Per-URL fetch errors are logged and swallowed above, so an unreachable or
+        # restructured source gets here with an empty list and would go on to write
+        # an empty rom-list.json over a good one. Myrient, the original source, shut
+        # down on 2026-03-31, which is exactly this case.
+        if not zip_files:
+            logger.error("No ZIP files found at any source URL. Not writing %s.", args.output)
+            print("\nError: no ROMs found at any source URL - the existing database was left alone.")
+            return 1
+
         # Set up a handler for clean cancellation
         import signal
         def signal_handler(sig, frame):
@@ -581,7 +590,13 @@ def main():
         
         # Sort results by filename for deterministic output
         results.sort(key=lambda x: x["filename"])
-        
+
+        # Same guard on the way out: every download could have failed individually
+        if not results:
+            logger.error("No ROM records were produced. Not writing %s.", args.output)
+            print("\nError: no ROM records produced - the existing database was left alone.")
+            return 1
+
         # Write results to JSON file
         print(f"\nWriting {len(results)} records to {args.output}")
         with open(args.output, "w") as f:
@@ -607,9 +622,12 @@ def main():
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
         print(f"\nError: {e}")
+        return 1
+    
+    return 0
 
 
 if __name__ == "__main__":
     # Import additional modules
     import sys
-    main()
+    sys.exit(main() or 0)

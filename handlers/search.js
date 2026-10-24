@@ -711,6 +711,25 @@ async function handleRandomGame(interaction) {
   }
 }
 
+/**
+ * Read rom-list.json from disk and swap in the new data and search index.
+ * On failure the previous data is kept, so a bad list can't take the bot down.
+ * @returns {boolean} Whether the reload succeeded
+ */
+function reloadRomData() {
+  const result = loadRomData();
+  if (!result.success) {
+    console.error('Failed to load ROM data. Keeping the previously loaded list.');
+    return false;
+  }
+
+  roms = result.roms;
+  fuseIndex = result.fuseIndex;
+  queryCache.clear();
+  console.log(`Game Boy ROM data loaded successfully! (${roms.length} entries)`);
+  return true;
+}
+
 // Setup cleanup interval
 let cleanupIntervalId = null;
 function startCleanupInterval() {
@@ -719,14 +738,7 @@ function startCleanupInterval() {
     console.log('Started cleanup interval');
 
     // Initialize ROM data when starting
-    const result = loadRomData();
-    if (result.success) {
-      roms = result.roms;
-      fuseIndex = result.fuseIndex;
-      console.log('Game Boy ROM data loaded successfully!');
-    } else {
-      console.error('Failed to initialize ROM data. Search functionality will be limited.');
-    }
+    reloadRomData();
   }
 }
 
@@ -747,6 +759,7 @@ module.exports = {
   cleanupExpired,
   handleGameBoyBotSearch,
   handleRandomGame,
+  reloadRomData,
   startCleanupInterval,
   stopCleanupInterval,
 };
