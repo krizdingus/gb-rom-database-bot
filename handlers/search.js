@@ -47,6 +47,8 @@ const REGION_TOKENS = [
   'france',
   'germany',
   'uk',
+  'united kingdom',
+  'hong kong',
   'italy',
   'taiwan',
   'korea',
@@ -183,21 +185,28 @@ function displayTitle(rom) {
 }
 
 /**
- * Build the region shown to the user. The stored region is the header's destination
- * code, which is only ever "Japanese" or "non-japanese", so the filename's region
- * tags are used instead whenever they're available.
+ * Build the region shown to the user.
+ *
+ * `rom.region` is the header's destination code, byte 0x14A, and it is not a
+ * region: 0x00 means "Japan, and possibly overseas" rather than "Japanese". So a
+ * World release setting 0x00 is correct hardware, and reporting it as "Japanese"
+ * was wrong for 982 entries, Tetris (World) (Rev 1) among them.
+ *
+ * The No-Intro filename tags describe the actual release, so they win whenever
+ * they exist. The byte is only a fallback, and says so when it is used.
  * @param {Object} rom - The ROM object
  * @returns {string} Display region
  */
 function displayRegion(rom) {
-  const region = rom.region || '';
-  if (region.toLowerCase() === 'non-japanese') {
-    const tokens = extractRegionTokens(rom.filename);
-    if (tokens.length > 0) {
-      return tokens.join(', ').toUpperCase();
-    }
+  const tokens = extractRegionTokens(rom.filename);
+  if (tokens.length > 0) {
+    return tokens.join(', ').toUpperCase();
   }
-  return region;
+
+  const region = (rom.region || '').toLowerCase();
+  if (region === 'japanese') return 'Unknown (header: Japan)';
+  if (region === 'non-japanese') return 'Unknown (header: non-Japan)';
+  return rom.region || '';
 }
 
 /**
@@ -416,11 +425,8 @@ async function handleGameBoyBotSearch(interaction) {
         const romRegion = r.region.toLowerCase();
         const filename = r.filename.toLowerCase();
 
-        // Extract and normalize all region tokens from filename
-        const tokens = (filename.match(/\(([^)]+)\)/g) || [])
-          .map(t => t.slice(1, -1).trim().toLowerCase())
-          .flatMap(t => t.split(/[,/]/).map(s => s.trim()))
-          .filter(t => t.length > 0);
+        // Region tags only: an arbitrary tag like "(Proto)" is not a region
+        const tokens = extractRegionTokens(filename);
 
         // Special cases first
         if (region === 'unlicensed') {
@@ -430,7 +436,7 @@ async function handleGameBoyBotSearch(interaction) {
           return romRegion === 'pirate' || filename.includes('(pirate)');
         }
         if (region === 'world') {
-          // Match if it has multiple tokens or explicit world tag
+          // An explicit (World) tag, or a multi-region release like (USA, Europe)
           return tokens.length > 1 || tokens.includes('world');
         }
 
@@ -448,6 +454,7 @@ async function handleGameBoyBotSearch(interaction) {
             'germany',
             'italy',
             'uk',
+            'united kingdom',
             'netherlands',
             'belgium',
             'sweden',
@@ -611,10 +618,7 @@ async function handleRandomGame(interaction) {
       filtered = filtered.filter(r => {
         const romRegion = r.region.toLowerCase();
         const filename = r.filename.toLowerCase();
-        const tokens = (filename.match(/\(([^)]+)\)/g) || [])
-          .map(t => t.slice(1, -1).trim().toLowerCase())
-          .flatMap(t => t.split(/[,/]/).map(s => s.trim()))
-          .filter(t => t.length > 0);
+        const tokens = extractRegionTokens(filename);
         if (region === 'unlicensed') {
           return romRegion === 'unlicensed' || filename.includes('(unl)');
         }
@@ -622,6 +626,7 @@ async function handleRandomGame(interaction) {
           return romRegion === 'pirate' || filename.includes('(pirate)');
         }
         if (region === 'world') {
+          // An explicit (World) tag, or a multi-region release like (USA, Europe)
           return tokens.length > 1 || tokens.includes('world');
         }
         if (tokens.includes(region)) {
@@ -635,6 +640,7 @@ async function handleRandomGame(interaction) {
             'germany',
             'italy',
             'uk',
+            'united kingdom',
             'netherlands',
             'belgium',
             'sweden',
@@ -767,6 +773,7 @@ module.exports = {
   activeSearches,
   collectors,
   createRomEmbed,
+  displayRegion,
   updateResultsPage,
   cleanupExpired,
   handleGameBoyBotSearch,

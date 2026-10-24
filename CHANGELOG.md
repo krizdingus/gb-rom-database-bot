@@ -5,6 +5,60 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-10-23
+
+### Added
+
+- **Build This Cart.** Look a game up and press the button: the embed swaps for a
+  build sheet naming which Mouse Bite Labs board fits it, the smallest flash and
+  SRAM chips it needs, the RAM jumper setting, and the parts to populate or omit.
+  Back to Game returns. Works from `/dmgdb search` and `/dmgdb random`, and Share
+  to Channel works on either view
+- Games that cannot be built say so and why, rather than suggesting a board that
+  won't work. 4,088 of 4,469 entries get a board; the rest are refused with a
+  reason - 360 for mappers no board uses, 9 for unreadable headers, 9 for MBC1
+  headers describing a cartridge the chip cannot address, 1 needing more save RAM
+  than any MBC3 board provides, and 2 larger than every board
+- `data/mbl-boards.json`, the board data, transcribed from the board READMEs
+  rather than the index table in Game-Boy-Cartridges - that table's Max ROM column
+  is the board's flash footprint, which for MBC1 and MBC3 is larger than the
+  mapper can address
+- `utils/cartridge.js`, the matching logic, with no discord.js dependency so the
+  same rules can drive something other than a bot
+
+### Fixed
+
+- The Region field reported `Japanese` for 982 entries whose filename says
+  somewhere else, `Tetris (World) (Rev 1)` among them. Byte 0x14A is a
+  destination code, and `0x00` means "Japan, and possibly overseas" rather than
+  "Japanese", so a World release setting it is correct hardware. The field now
+  shows the No-Intro filename tags, which describe the actual release, and falls
+  back to the byte only for the 10 entries with no region in their name - saying
+  so when it does, as `Unknown (header: Japan)`
+- `region:world` matched 3,064 of 4,469 entries, because the filter counted any
+  two parenthetical tags: `(USA) (Proto)` qualified. It now counts region tags
+  only, matching 1,214 - the 708 releases tagged `(World)` and 506 multi-region
+  releases like `(USA, Europe)`
+- `United Kingdom` and `Hong Kong` were missing from the region tokens, so seven
+  releases fell back to the header byte for no reason. UK releases now also match
+  `region:europe`
+- `sort_by:region` sorts on the displayed region, so it groups by actual region
+  rather than the two values the header byte can hold
+
+### Notes
+
+- MBC1's two jumper modes are exclusive: 2 MB of ROM with 64 Kbit of RAM, or
+  512 KB with 256 Kbit. Boards carry both and the matcher picks the one that fits
+- Two boards are deliberately left out: `GB-2DF4S-01A`, which the index table
+  lists but which has no README or gerbers, and `GB-2KF4S-01A`, whose README
+  opens with "DESIGN IS UNVERIFIED (but probably ok)". The MBC5 FRAM board is
+  included but never recommended first and never offered for a Game Boy Color
+  game, per its own README
+- Boards rank newest first: Type A over Type B, single-game over multicart, SRAM
+  over FRAM. Multicarts only report which slot size a game fits; the bot does not
+  plan game combinations
+- 37 rumble games are buildable but flagged, because no board drives the motor
+
 ## [1.0.6] - 2026-10-23
 
 ### Fixed

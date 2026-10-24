@@ -54,10 +54,15 @@ last character of the title. `Unknown (0x45)` is the letter `E`.
 | `0x00` | `Japanese`     |
 | `0x01` | `non-japanese` |
 
-This is the destination code and nothing finer. 1,026 entries whose filenames say
-USA, Europe or World still report `Japanese`, `Tetris (World) (Rev 1)` among them.
-The bot shows the filename's region tags instead wherever it has them, falling
-back to this byte.
+This is the destination code and nothing finer. `0x00` does not mean "Japanese":
+the spec is **Japan, and possibly overseas**, against `0x01` for overseas only. A
+`(World)` release setting `0x00` is therefore correct hardware, not a bad dump.
+
+982 entries set `0x00` while their filename names somewhere else — `Tetris
+(World) (Rev 1)`, the Taiwanese unlicensed carts, and most homebrew. The bot
+reports the No-Intro filename tags, which describe the actual release, and only
+falls back to this byte for the 10 entries whose filename gives no region. When
+it does fall back it says so: `Unknown (header: Japan)`.
 
 ### `romSize` — byte `0x148`
 
@@ -133,8 +138,9 @@ These are properties of the cartridges, not mistakes in the scan:
 
 - **367 entries report an undocumented `cgbFlag`** — that byte is part of the
   title on pre-Color cartridges.
-- **1,026 entries report `Japanese` with a non-Japanese filename** — the
-  destination code is coarse.
+- **982 entries set the Japan destination byte with a non-Japanese filename** —
+  the byte means "Japan, and possibly overseas", so this is correct for a World
+  release rather than an error.
 - **28 entries report undocumented `romSize` or `ramSize` bytes**, mostly
   unlicensed and pirate carts that never followed the spec.
 - **9 MBC1 entries declare a ROM/RAM combination the MBC1 cannot address** —
