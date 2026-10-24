@@ -49,7 +49,7 @@ client.on(Events.InteractionCreate, async interaction => {
   }
 });
 
-// Reload rom-list.json in place: `npm run update-roms && kill -HUP $(pgrep -f 'node index.js')`
+// Reload a replaced rom-list.json in place: kill -HUP $(pgrep -f 'node index.js')
 process.on('SIGHUP', () => {
   console.log('SIGHUP received, reloading ROM data...');
   reloadRomData();

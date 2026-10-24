@@ -2,7 +2,6 @@
 const fs = require('fs');
 const path = require('path');
 const Fuse = require('fuse.js');
-const { execSync } = require('child_process');
 
 // Function to normalize strings for better search and caching
 function normalizeString(str) {
@@ -109,20 +108,14 @@ function loadRomData() {
 
     const romListPath = path.join(__dirname, 'rom-list.json');
 
-    // Check if the file exists and generate if missing
+    // rom-list.json is the database and ships with the repo. It used to be
+    // regenerated here from the Myrient archive, which no longer exists; build a
+    // replacement from a folder of ROMs with scripts/scan_roms.py instead.
     if (!fs.existsSync(romListPath)) {
-      console.log('rom-list.json not found. Generating via fetch_gb_roms.py...');
-      try {
-        const scriptPath = path.join(__dirname, 'scripts', 'fetch_gb_roms.py');
-        execSync(`python3 "${scriptPath}"`, {
-          stdio: 'inherit',
-          cwd: __dirname, // Run from project root to ensure correct paths
-        });
-        console.log('Generation complete.');
-      } catch (error) {
-        console.error('Failed to generate rom-list.json:', error.message);
-        return { success: false };
-      }
+      console.error('Error: rom-list.json is missing.');
+      console.error('It ships with the repo. To build one from a folder of ROMs:');
+      console.error('  python3 scripts/scan_roms.py /path/to/roms --output rom-list.json');
+      return { success: false };
     }
 
     // Read ROM list from JSON file

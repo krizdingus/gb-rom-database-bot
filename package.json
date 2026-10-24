@@ -12,8 +12,7 @@
     "dev": "nodemon index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "update-roms": "node scripts/update-roms.js"
+    "format": "prettier --write ."
   },
   "keywords": [
     "discord",

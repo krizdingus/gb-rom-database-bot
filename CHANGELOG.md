@@ -36,6 +36,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   boards are labelled in bits, so this is the figure you need when setting RAM
   jumpers
 - Reload `rom-list.json` in place by sending the bot SIGHUP, no restart needed
+- `scripts/scan_roms.py`, which builds `rom-list.json` from a folder of ROMs or
+  zip archives instead of from a website. It keeps the cartridge-header decoding
+  the original scraper held and drops the downloading, which had nothing left to
+  download. It will not write an empty list over a good one
+- `docs/DATA.md`, documenting every field in `rom-list.json`, which header byte
+  it comes from, the full value tables, and the known oddities in the data
 - Links to the Mouse Bite Labs cartridge repos, which are what this is for
 
 ### Changed
@@ -49,6 +55,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- `scripts/fetch_gb_roms.py` and `scripts/update-roms.js`, along with
+  `npm run update-roms`. The scraper was written against Myrient's specific HTML
+  and that archive is gone, so it could not be pointed at another source without
+  being rewritten. `rom-list.json` is the database and ships with the repo
+- The auto-generate-if-missing path in `loadRomData`, which could only have
+  called the dead scraper. A missing `rom-list.json` now says so plainly
 - `sort_by:year`, which sorted nothing: no entry has ever had a year field. The
   dead Year embed field went with it
 - `commands/deploy.js`, a broken duplicate of the root `deploy.js`

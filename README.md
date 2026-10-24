@@ -12,7 +12,7 @@ Welcome to GB ROM Database Bot. Inspired by Catskull's GB Rom Database, I wanted
 - [Project Structure](#project-structure)
 - [Prerequisites](#prerequisites)
 - [Installation & Setup](#installation--setup)
-- [Manual Database Updates](#manual-database-updates)
+- [The Database](#the-database)
 - [Usage Examples](#usage-examples)
 - [Development Roadmap](#development-roadmap)
 - [Data Sources](#data-sources)
@@ -21,7 +21,7 @@ Welcome to GB ROM Database Bot. Inspired by Catskull's GB Rom Database, I wanted
 
 ## History & Development
 
-1. **Data Sourcing**: I started by scanning the cartridge headers of the No-Intro Game Boy and Game Boy Color sets from the Myrient archive using a Python script (fetch_gb_roms.py). That script generates rom-list.json. Myrient shut down on 31 March 2026, so the list is frozen at its May 2025 copy: 4,469 entries, including both No-Intro Private sets, prototypes, unlicensed and homebrew releases.
+1. **Data Sourcing**: I started by scanning the cartridge headers of the No-Intro Game Boy and Game Boy Color sets from the Myrient archive. Myrient shut down on 31 March 2026, so `rom-list.json` is frozen at its May 2025 copy: 4,469 entries, including both No-Intro Private sets, prototypes, unlicensed and homebrew releases. The scraper that built it is gone; `scripts/scan_roms.py` reads the same headers from a folder of ROMs instead.
 2. **Indexing & Fuzzy Search**: I integrated Fuse.js to allow fuzzy matching—typos, partial titles, or "zelda" vs "dr mario" all just work.
 3. **Flag & Feature Logic**: Handling region tags, unlicensed/pirate labels, multi-region titles, and inserting zero-width spaces after periods required some sneaky regex and utility functions. `utils/regions.js` picks the flag emoji; the filename-to-title work is `extractBaseTitle` in `loadRomData.js` and `cleanTitle` in `handlers/search.js`.
 4. **Modular Architecture**: The codebase splits responsibilities cleanly:
@@ -29,7 +29,7 @@ Welcome to GB ROM Database Bot. Inspired by Catskull's GB Rom Database, I wanted
    - `loadRomData.js` handles file loading, validation, and auto-generation if the JSON is missing.
    - `commands/gameboybot.js` (formerly `deploy.js`) defines the slash commands and options.
    - `handlers/search.js` and `handlers/buttons.js` process interactions, pagination, and back-navigation.
-   - `scripts/update-roms.js` wraps the Python fetch script for manual `npm run update-roms` updates.
+   - `scripts/scan_roms.py` rebuilds `rom-list.json` from a folder of ROMs.
 
 5. **Iterative Refinement**: Over many rounds, I added filters for mapper types, CGB/SGB support, battery/timer/rumble flags, sorting options, and improved title normalization (reordering "`, The`" conventions).
 
@@ -39,7 +39,6 @@ Welcome to GB ROM Database Bot. Inspired by Catskull's GB Rom Database, I wanted
 - **Random** ROM selection with the same filter options
 - **Filters** for region, CGB/SGB support, battery, timer, rumble, mapper, and sorting
 - **Rich embeds** showing mapper, ROM and RAM size in both bytes and bits, region, CGB/SGB support, and battery/timer/rumble flags
-- **Automatic** ROM database generation on first run
 - **Private by default** - results are only visible to you until you hit Share to Channel
 - **Graceful error handling**, caching, and pagination
 
@@ -60,8 +59,7 @@ Welcome to GB ROM Database Bot. Inspired by Catskull's GB Rom Database, I wanted
 - **loadRomData.js** — Data loading, validation, and auto-generation
 - **scripts/** — Utility scripts:
 
-  - `fetch_gb_roms.py` — Python script to produce the ROM list
-  - `update-roms.js` — Node wrapper to rerun the Python script
+  - `scan_roms.py` — Python script to build the ROM list from a folder of ROMs
   - `fix-commands.js` — Cleanup tool for guild-specific commands
   - `check-commands.js` — Verification tool for command registration status
 
@@ -113,27 +111,31 @@ Note: Global commands can take a while to appear across Discord's servers. Guild
 4. Run `npm run deploy` to register commands. The bot does not register them on startup.
 5. Start the bot with `npm start`.
 
-On first run, if `rom-list.json` is missing, the bot will auto-generate it. If generation fails, the process exits to avoid running without data.
+`rom-list.json` ships with the repo. If it is missing the bot exits rather than running with no data.
 
 ### Deployment Modes
 
 - **With `GUILD_ID` set**: Commands are registered instantly in that specific server, which is ideal for testing and development.
 - **Without `GUILD_ID`**: Commands are registered globally, making them available on every server the bot is in. Guild commands update immediately; global ones can take longer to appear.
 
-## Manual Database Updates
+## The Database
 
-To refetch the ROM list:
+`rom-list.json` **is** the database. It ships with the repo, 4,469 entries, and the bot reads it at startup. There is nothing to fetch and nothing to update: it was built from the No-Intro sets on the Myrient archive, which shut down on 31 March 2026.
+
+If you want to build your own from ROMs you already have:
 
 ```bash
-npm run update-roms
+python3 scripts/scan_roms.py /path/to/roms --output rom-list.json
 ```
 
-This wraps `fetch_gb_roms.py` and rewrites `rom-list.json`. It does **not** reload the running bot, which keeps the list it loaded at startup. To pick up a new list:
+It reads `.gb` and `.gbc` files, and ROMs inside `.zip` archives, decodes each cartridge header, and writes the same format the bot expects. Name the files the way No-Intro does and you will get the same `filename` values. It refuses to write an empty list, so a mistyped path costs you nothing.
+
+See [docs/DATA.md](docs/DATA.md) for what each field means and which header byte it comes from.
+
+The running bot keeps the list it loaded at startup. To pick up a replacement:
 
 - self-hosted: `kill -HUP $(pgrep -f 'node index.js')`
 - hosted: restart or redeploy the service
-
-Note that Myrient, the original source, shut down on 31 March 2026. The script will find nothing there and abort without touching your existing `rom-list.json`. Point it at another mirror with `--config` if you have one.
 
 ## Usage Examples
 
