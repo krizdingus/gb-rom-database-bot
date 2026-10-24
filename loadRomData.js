@@ -33,19 +33,25 @@ function extractBaseTitle(filename) {
   base = base.replace(/\s*\([^)]*\)\s*$/, '');
 
   // 3) Handle comma-article patterns
-  const commaArticlePattern = /^(.*),\s*(The|A|An)\s*(?:-\s*(.*))?$/i;
-  const m = base.match(commaArticlePattern);
-  if (m) {
-    // If there's a subtitle (after the dash), include it
-    if (m[3]) {
-      return `${m[2]} ${m[1]} - ${m[3]}`;
-    }
-    // Otherwise just reorder the article
-    return `${m[2]} ${m[1]}`;
-  }
+  return reorderArticle(base).trim();
+}
 
-  // 4) Trim whitespace
-  return base.trim();
+/**
+ * Move a trailing article to the front: "Pacifist, The" -> "The Pacifist".
+ * Whatever follows the article is kept in place, so this works whether the name
+ * ends there, carries a subtitle ("Legend of Zelda, The - Link's Awakening"), or
+ * still has No-Intro tags on it ("Pacifist, The (World) (Unl)").
+ * @param {string} title - Title that may have a trailing article
+ * @returns {string} Title with the article moved to the front
+ */
+function reorderArticle(title) {
+  if (!title) return '';
+
+  // \b after the article stops this matching ", Theme Park" or ", Antarctica"
+  const m = title.match(/^(.*?),\s*(The|A|An)\b(.*)$/i);
+  if (!m) return title;
+
+  return `${m[2]} ${m[1]}${m[3]}`;
 }
 
 // Function to normalize game titles for better matching
@@ -155,5 +161,6 @@ module.exports = {
   loadRomData,
   normalizeString,
   extractBaseTitle,
+  reorderArticle,
   normalizeGameTitle,
 };
