@@ -16,7 +16,7 @@
 - `battery` - Filter by battery backup
 - `timer` - Filter by timer
 - `rumble` - Filter by rumble
-- `sort_by` - Sort results by relevance, title, year, or region (search only)
+- `sort_by` - Sort results by relevance, title, or region (search only)
 - `preserve_relevance` - Keep relevance-based sorting when using other filters (search only)
 - `mapper` - Filter by cartridge mapper
 

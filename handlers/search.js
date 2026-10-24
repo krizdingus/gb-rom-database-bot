@@ -147,14 +147,39 @@ function cleanTitle(title) {
 }
 
 /**
+ * Build the title shown to the user: the filename with its region and SGB tags removed
+ * @param {Object} rom - The ROM object
+ * @returns {string} Display title
+ */
+function displayTitle(rom) {
+  return cleanTitle(extractBaseTitle(rom.filename));
+}
+
+/**
+ * Build the region shown to the user. The stored region is the header's destination
+ * code, which is only ever "Japanese" or "non-japanese", so the filename's region
+ * tags are used instead whenever they're available.
+ * @param {Object} rom - The ROM object
+ * @returns {string} Display region
+ */
+function displayRegion(rom) {
+  const region = rom.region || '';
+  if (region.toLowerCase() === 'non-japanese') {
+    const tokens = extractRegionTokens(rom.filename);
+    if (tokens.length > 0) {
+      return tokens.join(', ').toUpperCase();
+    }
+  }
+  return region;
+}
+
+/**
  * Create a rich embed for a ROM entry
  * @param {Object} rom - The ROM object
  * @returns {Promise<EmbedBuilder>} Discord embed with ROM details
  */
 async function createRomEmbed(rom) {
-  // Extract the base title and clean it
-  const baseTitle = extractBaseTitle(rom.filename);
-  const cleanedTitle = cleanTitle(baseTitle);
+  const cleanedTitle = displayTitle(rom);
 
   // Use the pickRegionEmoji function
   const regionEmoji = pickRegionEmoji(rom.filename, rom.region);
@@ -185,18 +210,10 @@ async function createRomEmbed(rom) {
     }
   }
 
-  // Handle region display
-  let displayRegion = rom.region;
-  if (rom.region.toLowerCase() === 'non-japanese') {
-    const tokens = extractRegionTokens(rom.filename);
-    if (tokens.length > 0) {
-      displayRegion = tokens.join(', ').toUpperCase();
-    }
-  }
-
   // Add ROM details in specified order
-  if (displayRegion) {
-    embed.addFields({ name: 'Region', value: displayRegion, inline: true });
+  const region = displayRegion(rom);
+  if (region) {
+    embed.addFields({ name: 'Region', value: region, inline: true });
   }
 
   if (rom.cgbFlag) {
@@ -228,10 +245,6 @@ async function createRomEmbed(rom) {
     embed.addFields({ name: 'Features', value: features.join(', '), inline: true });
   }
 
-  if (rom.year) {
-    embed.addFields({ name: 'Year', value: rom.year, inline: true });
-  }
-
   return embed;
 }
 
@@ -245,13 +258,15 @@ async function updateResultsPage(interaction, search, query) {
   // Reset the timestamp on any interaction
   search.timestamp = Date.now();
 
+  // Recalculate total pages, then clamp the current page into range so the
+  // navigation buttons can never point past the end of the results
+  const totalPages = Math.max(1, Math.ceil(search.results.length / GAMES_PER_PAGE));
+  search.currentPage = Math.min(Math.max(search.currentPage, 1), totalPages);
+
   // Calculate the start and end indices for the current page
   const startIdx = (search.currentPage - 1) * GAMES_PER_PAGE;
   const endIdx = Math.min(startIdx + GAMES_PER_PAGE, search.results.length);
   const pageResults = search.results.slice(startIdx, endIdx);
-
-  // Recalculate total pages
-  const totalPages = Math.ceil(search.results.length / GAMES_PER_PAGE);
 
   // Format the list header
   let responseText = `Found ${search.results.length} matches for "${query}". Did you mean:\n\n`;
@@ -465,18 +480,35 @@ async function handleGameBoyBotSearch(interaction) {
     const mapperFilter = interaction.options.getString('mapper');
     if (mapperFilter) {
       results = results.filter(r => {
-        const m = r.item.mapper || '';
+        const m = r.mapper || '';
         return mapperFilter === 'Unknown' ? m.startsWith('Unknown') : m === mapperFilter;
       });
     }
 
-    // Sorting
-    if (sortBy === 'relevance' && preserveRelevance) {
-      // Keep Fuse.js relevance sorting
+    // Sorting. Title and region sort on what the embed actually shows, not on the
+    // raw fields - 'title' is the 11-byte header title ("TWINE CGB") and 'region'
+    // is only ever "Japanese" or "non-japanese".
+    if (sortBy === 'relevance') {
       results.sort((a, b) => a.score - b.score);
     } else {
-      // Apply alphabetical sorting
-      results.sort((a, b) => String(a[sortBy] || '').localeCompare(String(b[sortBy] || '')));
+      const sortKey = sortBy === 'region' ? displayRegion : displayTitle;
+      results.sort((a, b) => {
+        const compared = sortKey(a).localeCompare(sortKey(b));
+        // preserve_relevance breaks ties by Fuse's score instead of leaving them
+        // in whatever order the filters happened to produce
+        if (compared !== 0) return compared;
+        return preserveRelevance ? a.score - b.score : 0;
+      });
+    }
+
+    // Nothing matched: say so and stop. Falling through to the paginated list
+    // produced "Found 0 matches. Did you mean:" above an empty "Page 1/0".
+    if (results.length === 0) {
+      await interaction.reply({
+        content: `No matches for "${rawQuery}". Try fewer filters or a shorter query.`,
+        flags: MessageFlags.Ephemeral,
+      });
+      return;
     }
 
     // If we have exactly one result, show it directly

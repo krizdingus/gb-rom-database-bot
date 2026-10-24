@@ -52,7 +52,6 @@ module.exports = {
             .addChoices(
               { name: 'Relevance', value: 'relevance' },
               { name: 'Title', value: 'title' },
-              { name: 'Year', value: 'year' },
               { name: 'Region', value: 'region' }
             )
         )
@@ -169,7 +168,7 @@ module.exports = {
             '• `battery` - Filter by battery backup\n' +
             '• `timer` - Filter by timer\n' +
             '• `rumble` - Filter by rumble\n' +
-            '• `sort_by` - Sort results by relevance, title, year, or region (search only)\n' +
+            '• `sort_by` - Sort results by relevance, title, or region (search only)\n' +
             '• `preserve_relevance` - Keep relevance-based sorting when using other filters (search only)\n' +
             '• `mapper` - Filter by cartridge mapper\n\n' +
             '**Features:**\n' +
