@@ -10,6 +10,7 @@ const {
 const { normalizeString, extractBaseTitle, loadRomData } = require('../loadRomData');
 // Import the regions module
 const { pickRegionEmoji } = require('../utils/regions');
+const { formatSize } = require('../utils/sizes');
 const path = require('path');
 const fetch = require('node-fetch');
 
@@ -229,11 +230,11 @@ async function createRomEmbed(rom) {
   }
 
   if (rom.romSize) {
-    embed.addFields({ name: 'ROM Size', value: rom.romSize, inline: true });
+    embed.addFields({ name: 'ROM Size', value: formatSize(rom.romSize), inline: true });
   }
 
   if (rom.ramSize) {
-    embed.addFields({ name: 'RAM Size', value: rom.ramSize, inline: true });
+    embed.addFields({ name: 'RAM Size', value: formatSize(rom.ramSize), inline: true });
   }
 
   // Combine features into a single field
