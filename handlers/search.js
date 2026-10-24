@@ -7,12 +7,10 @@ const {
   ButtonStyle,
   MessageFlags,
 } = require('discord.js');
-const { normalizeString, extractBaseTitle, loadRomData } = require('../loadRomData');
+const { extractBaseTitle, loadRomData } = require('../loadRomData');
 // Import the regions module
 const { pickRegionEmoji } = require('../utils/regions');
 const { formatSize } = require('../utils/sizes');
-const path = require('path');
-const fetch = require('node-fetch');
 
 // Constants for box art URLs
 const GB_SHA = '9db991096041e2c3476556cb6bd0810cdf1b5a93';
@@ -22,15 +20,18 @@ const GBC_BASE_URL = `https://raw.githubusercontent.com/libretro-thumbnails/Nint
 
 // Configuration constants
 const SEARCH_EXPIRATION_TIME = 70000; // 70 seconds
-const CACHE_EXPIRATION_TIME = 10 * 60 * 1000; // 10 minutes
 const GAMES_PER_PAGE = 4; // Maximum games per page (Discord allows max 5 action rows)
 const CLEANUP_INTERVAL = 90000; // Run cleanup every 90 seconds
-const DEBUG = true; // Set to true to enable debug logging
+const DEBUG = process.env.DEBUG === 'true'; // Set DEBUG=true in .env to enable debug logging
 
 // Global collections for search state
 const activeSearches = new Collection();
 const collectors = new Collection();
-const queryCache = new Map();
+
+// Whether a box art URL exists, keyed by URL. The thumbnail repos are pinned to
+// fixed commits, so an answer never changes and never needs expiring - this saves
+// a HEAD request to GitHub on every single lookup.
+const boxArtCache = new Map();
 
 // Initialize ROM data
 let roms = [];
@@ -148,6 +149,29 @@ function cleanTitle(title) {
 }
 
 /**
+ * Check whether a box art thumbnail exists, remembering the answer
+ * @param {string} url - Thumbnail URL
+ * @returns {Promise<boolean>} Whether the thumbnail can be used
+ */
+async function boxArtExists(url) {
+  if (boxArtCache.has(url)) {
+    return boxArtCache.get(url);
+  }
+
+  let exists = false;
+  try {
+    const res = await fetch(url, { method: 'HEAD' });
+    exists = res.ok;
+  } catch (err) {
+    // silent fail—no thumbnail. Not cached, so a network blip can be retried.
+    return false;
+  }
+
+  boxArtCache.set(url, exists);
+  return exists;
+}
+
+/**
  * Build the title shown to the user: the filename with its region and SGB tags removed
  * @param {Object} rom - The ROM object
  * @returns {string} Display title
@@ -201,13 +225,8 @@ async function createRomEmbed(rom) {
     const pngName = rom.rom_filename.replace(/\.(gb|gbc)$/i, '.png');
     const thumbURL = `${baseURL}/${encodeURIComponent(pngName)}`;
 
-    try {
-      const res = await fetch(thumbURL, { method: 'HEAD' });
-      if (res.ok) {
-        embed.setThumbnail(thumbURL);
-      }
-    } catch (err) {
-      // silent fail—no thumbnail
+    if (await boxArtExists(thumbURL)) {
+      embed.setThumbnail(thumbURL);
     }
   }
 
@@ -361,13 +380,6 @@ function cleanupExpired() {
 
       // Delete the search
       activeSearches.delete(userId);
-    }
-  });
-
-  // Clean up expired cache entries
-  queryCache.forEach((entry, query) => {
-    if (now - entry.timestamp > CACHE_EXPIRATION_TIME) {
-      queryCache.delete(query);
     }
   });
 }
@@ -725,7 +737,6 @@ function reloadRomData() {
 
   roms = result.roms;
   fuseIndex = result.fuseIndex;
-  queryCache.clear();
   console.log(`Game Boy ROM data loaded successfully! (${roms.length} entries)`);
   return true;
 }
@@ -753,7 +764,6 @@ function stopCleanupInterval() {
 module.exports = {
   activeSearches,
   collectors,
-  queryCache,
   createRomEmbed,
   updateResultsPage,
   cleanupExpired,

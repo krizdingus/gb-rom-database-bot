@@ -36,4 +36,7 @@ Thumbs.db
 
 # Project specific
 rom-list copy.json
-example-rom-list.json 
+example-rom-list.json
+
+# Internal notes
+notes/
