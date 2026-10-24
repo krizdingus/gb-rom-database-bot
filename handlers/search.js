@@ -145,7 +145,9 @@ function cleanTitle(title) {
   }
   cleaned = t;
 
-  return cleaned;
+  // Removing a tag from the middle of a name leaves the gap behind, e.g.
+  // "Adulting! (World) (v2.0) (Aftermarket) (Unl)" -> "Adulting!  (v2.0)"
+  return cleaned.replace(/\s{2,}/g, ' ').trim();
 }
 
 /**
