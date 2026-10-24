@@ -329,7 +329,7 @@ def process_zip_file(zip_info, retry_count=2, calculate_checksum=True, calculate
                             
                             # Build JSON object in the required format
                             result = {
-                                "filename": os.path.splitext(filename)[0],  # Remove .zip extension
+                                "filename": filename,  # .zip was already stripped by the directory parser
                                 "rom_filename": rom_file.filename,
                                 "title": title,
                                 "cgbFlag": CGB_FLAGS.get(cgb_flag, f"Unknown (0x{cgb_flag:02X})"),
