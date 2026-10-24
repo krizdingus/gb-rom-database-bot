@@ -17,12 +17,11 @@ async function safeReplyError(interaction, err, label) {
   }
 }
 
+// Guilds is all this needs: it only ever handles interactions, and never reads
+// messages. GuildMessages and the privileged MessageContent intent were being
+// requested and never used.
 const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-  ],
+  intents: [GatewayIntentBits.Guilds],
 });
 
 client.once(Events.ClientReady, () => {
