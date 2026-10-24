@@ -27,7 +27,7 @@
   - Game Boy Color: [Nintendo\_-_Game_Boy_Color](https://github.com/libretro-thumbnails/Nintendo_-_Game_Boy_Color)
 - Smart title cleaning (removes region/SGB tags)
 - Region emoji indicators
-- Detailed ROM information (mapper, size in bytes and bits, features)
+- Detailed ROM information (mapper, size, features)
 - Results are private until you hit Share to Channel
 
 ## Examples

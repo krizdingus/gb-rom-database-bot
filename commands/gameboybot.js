@@ -176,7 +176,7 @@ module.exports = {
             ' — Game Boy: <https://github.com/libretro-thumbnails/Nintendo_-_Game_Boy>; Game Boy Color: <https://github.com/libretro-thumbnails/Nintendo_-_Game_Boy_Color>\n' +
             '• Smart title cleaning (removes region/SGB tags)\n' +
             '• Region emoji indicators\n' +
-            '• Detailed ROM information (mapper, size in bytes and bits, features)\n' +
+            '• Detailed ROM information (mapper, size, features)\n' +
             '• Results are private until you hit Share to Channel\n\n' +
             '**Examples:**\n' +
             '`/dmgdb search "Pokemon"` - Search for Pokemon games\n' +
@@ -209,7 +209,6 @@ module.exports = {
             '  • Game Boy Color: <https://github.com/libretro-thumbnails/Nintendo_-_Game_Boy_Color>\n' +
             "• Prior art: Catskull's GB ROM Database (<https://catskull.net/gb-rom-database/>)\n\n" +
             '**Flash Cartridges:**\n' +
-            'Sizes are shown in bytes and bits because cartridge hardware is labelled in bits.\n' +
             '• Mouse Bite Labs boards: <https://github.com/MouseBiteLabs/Game-Boy-Cartridges>\n\n' +
             `**Version:** ${version}\n` +
             '**Author:** krizdingus\n' +

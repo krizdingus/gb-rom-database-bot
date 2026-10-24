@@ -39,7 +39,7 @@ Welcome to GB ROM Database Bot. Inspired by Catskull's GB Rom Database, I wanted
 - **Search** by title or filename with fuzzy matching
 - **Random** ROM selection with the same filter options
 - **Filters** for region, CGB/SGB support, battery, timer, rumble, mapper, and sorting
-- **Rich embeds** showing mapper, ROM and RAM size in both bytes and bits, region, CGB/SGB support, and battery/timer/rumble flags
+- **Rich embeds** showing mapper, ROM and RAM size, region, CGB/SGB support, and battery/timer/rumble flags
 - **Private by default** - results are only visible to you until you hit Share to Channel
 - **Graceful error handling**, caching, and pagination
 
@@ -198,9 +198,11 @@ Below is a roughly sketched, wildly optimistic roadmap because who the hell know
 
 ## Flash Cartridges
 
-Sizes are shown in bytes and bits because flash cart hardware is labelled in bits. On Mouse Bite Labs boards the RAM jumpers are silkscreened "64K" and "256K/1M", so a game listed as `32 KiB (256 Kbit)` wants the 256K setting.
+This started as a way to look up what a game needs before putting it on a flash cart. The bot reports what the cartridge header says and stops there - working out which board suits a game depends on which boards are currently available and which mapper substitutions are safe, and that lives in people's heads rather than in a header byte.
 
-- [Game Boy Cartridges](https://github.com/MouseBiteLabs/Game-Boy-Cartridges) — all current board variants
+Mouse Bite Labs makes the boards this was built around:
+
+- [Game Boy Cartridges](https://github.com/MouseBiteLabs/Game-Boy-Cartridges) - all current board variants
 - [MBC1](https://github.com/MouseBiteLabs/Game-Boy-MBC1-Cartridge) · [MBC3](https://github.com/MouseBiteLabs/Game-Boy-MBC3-Cartridge) · [MBC5](https://github.com/MouseBiteLabs/Game-Boy-MBC5-Cartridge)
 - [MBC3 Multicart](https://github.com/MouseBiteLabs/Game-Boy-MBC3-Multicart) · [MBC5 Multicart](https://github.com/MouseBiteLabs/Game-Boy-MBC5-Multicart)
 

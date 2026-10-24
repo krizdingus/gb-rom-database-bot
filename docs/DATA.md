@@ -81,17 +81,20 @@ are always looked up rather than calculated.
 
 ### `ramSize` — byte `0x149`
 
-| Byte   | Value   | In bits  |
-| ------ | ------- | -------- |
-| `0x00` | `None`  | —        |
-| `0x01` | 2 KiB   | 16 Kbit  |
-| `0x02` | 8 KiB   | 64 Kbit  |
-| `0x03` | 32 KiB  | 256 Kbit |
-| `0x04` | 128 KiB | 1 Mbit   |
-| `0x05` | 64 KiB  | 512 Kbit |
+| Byte   | Value   |
+| ------ | ------- |
+| `0x00` | `None`  |
+| `0x01` | 2 KiB   |
+| `0x02` | 8 KiB   |
+| `0x03` | 32 KiB  |
+| `0x04` | 128 KiB |
+| `0x05` | 64 KiB  |
 
 `0x05` being 64 KiB, out of order after 128 KiB, is correct and not a typo.
-Flash cartridge hardware is labelled in bits, which is why the embed shows both.
+
+Flash cartridge hardware is usually labelled in bits rather than bytes, so a
+board's "256K" jumper is the setting for a 32 KiB save. The bot reports the
+header's own value and leaves that conversion to you.
 
 ### `mapper` — byte `0x147`
 

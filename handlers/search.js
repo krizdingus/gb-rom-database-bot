@@ -10,7 +10,6 @@ const {
 const { extractBaseTitle, prepareQuery, loadRomData } = require('../loadRomData');
 // Import the regions module
 const { pickRegionEmoji } = require('../utils/regions');
-const { formatSize } = require('../utils/sizes');
 
 // Constants for box art URLs
 const GB_SHA = '9db991096041e2c3476556cb6bd0810cdf1b5a93';
@@ -260,11 +259,11 @@ async function createRomEmbed(rom) {
   }
 
   if (rom.romSize) {
-    embed.addFields({ name: 'ROM Size', value: formatSize(rom.romSize), inline: true });
+    embed.addFields({ name: 'ROM Size', value: rom.romSize, inline: true });
   }
 
   if (rom.ramSize) {
-    embed.addFields({ name: 'RAM Size', value: formatSize(rom.ramSize), inline: true });
+    embed.addFields({ name: 'RAM Size', value: rom.ramSize, inline: true });
   }
 
   // Combine features into a single field
