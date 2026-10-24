@@ -16,19 +16,20 @@ Welcome to GB ROM Database Bot. Inspired by Catskull's GB Rom Database, I wanted
 - [Usage Examples](#usage-examples)
 - [Development Roadmap](#development-roadmap)
 - [Data Sources](#data-sources)
+- [Flash Cartridges](#flash-cartridges)
 - [Contributing](#contributing)
 
 ## History & Development
 
-1. **Data Sourcing**: I started by scanning the No-Intro Game Boy game dump headers from the Myrient archive using a Python script (fetch_gb_roms.py). That script generates rom-list.json.
+1. **Data Sourcing**: I started by scanning the cartridge headers of the No-Intro Game Boy and Game Boy Color sets from the Myrient archive using a Python script (fetch_gb_roms.py). That script generates rom-list.json. Myrient shut down on 31 March 2026, so the list is frozen at its May 2025 copy: 4,469 entries, including both No-Intro Private sets, prototypes, unlicensed and homebrew releases.
 2. **Indexing & Fuzzy Search**: I integrated Fuse.js to allow fuzzy matching—typos, partial titles, or "zelda" vs "dr mario" all just work.
-3. **Flag & Feature Logic**: Handling region tags, unlicensed/pirate labels, multi-region titles, and inserting zero-width spaces after periods required some sneaky regex and utility functions in `utils/regions.js`.
+3. **Flag & Feature Logic**: Handling region tags, unlicensed/pirate labels, multi-region titles, and inserting zero-width spaces after periods required some sneaky regex and utility functions. `utils/regions.js` picks the flag emoji; the filename-to-title work is `extractBaseTitle` in `loadRomData.js` and `cleanTitle` in `handlers/search.js`.
 4. **Modular Architecture**: The codebase splits responsibilities cleanly:
 
    - `loadRomData.js` handles file loading, validation, and auto-generation if the JSON is missing.
    - `commands/gameboybot.js` (formerly `deploy.js`) defines the slash commands and options.
    - `handlers/search.js` and `handlers/buttons.js` process interactions, pagination, and back-navigation.
-   - `scripts/update-roms.js` wraps the Python fetch script for manual `npm run update-roms` updates and hot-reloads the index.
+   - `scripts/update-roms.js` wraps the Python fetch script for manual `npm run update-roms` updates.
 
 5. **Iterative Refinement**: Over many rounds, I added filters for mapper types, CGB/SGB support, battery/timer/rumble flags, sorting options, and improved title normalization (reordering "`, The`" conventions).
 
@@ -37,9 +38,9 @@ Welcome to GB ROM Database Bot. Inspired by Catskull's GB Rom Database, I wanted
 - **Search** by title or filename with fuzzy matching
 - **Random** ROM selection with the same filter options
 - **Filters** for region, CGB/SGB support, battery, timer, rumble, mapper, and sorting
-- **Rich embeds** showing hardware requirements, part footprints, and project links
+- **Rich embeds** showing mapper, ROM and RAM size in both bytes and bits, region, CGB/SGB support, and battery/timer/rumble flags
 - **Automatic** ROM database generation on first run
-- **Hot-reload** of updated data via `npm run update-roms`
+- **Private by default** - results are only visible to you until you hit Share to Channel
 - **Graceful error handling**, caching, and pagination
 
 ## Commands
@@ -60,7 +61,7 @@ Welcome to GB ROM Database Bot. Inspired by Catskull's GB Rom Database, I wanted
 - **scripts/** — Utility scripts:
 
   - `fetch_gb_roms.py` — Python script to produce the ROM list
-  - `update-roms.js` — Node wrapper to rerun Python script and reload data
+  - `update-roms.js` — Node wrapper to rerun the Python script
   - `fix-commands.js` — Cleanup tool for guild-specific commands
   - `check-commands.js` — Verification tool for command registration status
 
@@ -96,11 +97,11 @@ Run it with:
 node scripts/check-commands.js
 ```
 
-Note: Global commands may take up to 1 hour to propagate across Discord's servers.
+Note: Global commands can take a while to appear across Discord's servers. Guild commands update immediately.
 
 ## Prerequisites
 
-- Node.js v16.9.0+ and npm
+- Node.js v18+ and npm
 - Python 3.x for ROM list generation
 - A Discord bot token with `applications.commands` scope
 
@@ -109,7 +110,7 @@ Note: Global commands may take up to 1 hour to propagate across Discord's server
 1. Clone this repository.
 2. Run `npm install`.
 3. Create a `.env` with `BOT_TOKEN`, `CLIENT_ID`, and optional `GUILD_ID`.
-4. Run `npm run deploy` to register commands (or let the bot auto-deploy on startup).
+4. Run `npm run deploy` to register commands. The bot does not register them on startup.
 5. Start the bot with `npm start`.
 
 On first run, if `rom-list.json` is missing, the bot will auto-generate it. If generation fails, the process exits to avoid running without data.
@@ -117,23 +118,28 @@ On first run, if `rom-list.json` is missing, the bot will auto-generate it. If g
 ### Deployment Modes
 
 - **With `GUILD_ID` set**: Commands are registered instantly in that specific server, which is ideal for testing and development.
-- **Without `GUILD_ID`**: Commands are registered globally, making them available on any server where the bot is invited. Note that global command registration may take up to an hour to propagate across Discord's servers.
+- **Without `GUILD_ID`**: Commands are registered globally, making them available on every server the bot is in. Guild commands update immediately; global ones can take longer to appear.
 
 ## Manual Database Updates
 
-To fetch and reload the latest ROM list anytime:
+To refetch the ROM list:
 
 ```bash
 npm run update-roms
 ```
 
-This wraps `fetch_gb_roms.py`, updates `rom-list.json`, and hot-reloads the in-memory index.
+This wraps `fetch_gb_roms.py` and rewrites `rom-list.json`. It does **not** reload the running bot, which keeps the list it loaded at startup. To pick up a new list:
+
+- self-hosted: `kill -HUP $(pgrep -f 'node index.js')`
+- hosted: restart or redeploy the service
+
+Note that Myrient, the original source, shut down on 31 March 2026. The script will find nothing there and abort without touching your existing `rom-list.json`. Point it at another mirror with `--config` if you have one.
 
 ## Usage Examples
 
 ```bash
 /dmgdb search query:Pokemon region:Europe mapper:MBC3 battery:true
-/dmgdb random cgb:GB/CBG sgb:false
+/dmgdb random cgb:GB/CGB sgb:false
 ```
 
 ## Development Roadmap
@@ -145,7 +151,7 @@ Below is a roughly sketched, wildly optimistic roadmap because who the hell know
 - **Natural-Language Queries**  
   I'll make the bot understand "Hey, show me all Color-only Zelda games" without forcing people to remember flags and colons.
 - **Interactive Filter Prompts**  
-  After `/dmgdb query Mario`, I'll follow up with "Found 12 hits—wanna narrow by region, mapper, or features?" and let them click buttons instead of googling.
+  After `/dmgdb search Mario`, I'll follow up with "Found 12 hits—wanna narrow by region, mapper, or features?" and let them click buttons instead of googling.
 - **Saved Searches & Watchlists**
   - `/dmgdb save favorites` to stash your go-to filters.
   - `/dmgdb watch Pokémon` so the bot DM's you whenever something new sneaks into the database.
@@ -183,8 +189,17 @@ Below is a roughly sketched, wildly optimistic roadmap because who the hell know
 
 ## Data Sources
 
-- ROM dumps: No-Intro (via Myrient archives)
-- Box art: libretro-thumbnails
+- ROM dumps: No-Intro (via Myrient archives, offline since 31 March 2026)
+- Box art: [libretro-thumbnails](https://github.com/libretro-thumbnails)
+- Prior art: [Catskull's GB ROM Database](https://catskull.net/gb-rom-database/)
+
+## Flash Cartridges
+
+Sizes are shown in bytes and bits because flash cart hardware is labelled in bits. On Mouse Bite Labs boards the RAM jumpers are silkscreened "64K" and "256K/1M", so a game listed as `32 KiB (256 Kbit)` wants the 256K setting.
+
+- [Game Boy Cartridges](https://github.com/MouseBiteLabs/Game-Boy-Cartridges) — all current board variants
+- [MBC1](https://github.com/MouseBiteLabs/Game-Boy-MBC1-Cartridge) · [MBC3](https://github.com/MouseBiteLabs/Game-Boy-MBC3-Cartridge) · [MBC5](https://github.com/MouseBiteLabs/Game-Boy-MBC5-Cartridge)
+- [MBC3 Multicart](https://github.com/MouseBiteLabs/Game-Boy-MBC3-Multicart) · [MBC5 Multicart](https://github.com/MouseBiteLabs/Game-Boy-MBC5-Multicart)
 
 ## Contributing
 

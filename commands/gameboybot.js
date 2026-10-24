@@ -176,7 +176,8 @@ module.exports = {
             ' — Game Boy: <https://github.com/libretro-thumbnails/Nintendo_-_Game_Boy>; Game Boy Color: <https://github.com/libretro-thumbnails/Nintendo_-_Game_Boy_Color>\n' +
             '• Smart title cleaning (removes region/SGB tags)\n' +
             '• Region emoji indicators\n' +
-            '• Detailed ROM information (mapper, size, features)\n\n' +
+            '• Detailed ROM information (mapper, size in bytes and bits, features)\n' +
+            '• Results are private until you hit Share to Channel\n\n' +
             '**Examples:**\n' +
             '`/dmgdb search "Pokemon"` - Search for Pokemon games\n' +
             '`/dmgdb search "Zelda" region:usa` - Search for USA Zelda games\n' +
@@ -198,13 +199,18 @@ module.exports = {
             '• Get random games with filters\n' +
             '• View detailed ROM information\n' +
             '• Automatic box art thumbnails\n' +
-            '• Smart title cleaning\n\n' +
+            '• Smart title cleaning\n' +
+            '• Private by default until you hit Share to Channel\n\n' +
             '**Data Sources:**\n' +
-            '• ROM information source: <https://myrient.erista.me/>\n' +
             '• ROMs dumped by: No-Intro (<https://no-intro.org>)\n' +
+            '• Headers scanned from the Myrient archive, which went offline 31 March 2026, so the list is frozen at its May 2025 copy\n' +
             '• Box art from libretro-thumbnails:\n' +
             '  • Game Boy: <https://github.com/libretro-thumbnails/Nintendo_-_Game_Boy>\n' +
-            '  • Game Boy Color: <https://github.com/libretro-thumbnails/Nintendo_-_Game_Boy_Color>\n\n' +
+            '  • Game Boy Color: <https://github.com/libretro-thumbnails/Nintendo_-_Game_Boy_Color>\n' +
+            "• Prior art: Catskull's GB ROM Database (<https://catskull.net/gb-rom-database/>)\n\n" +
+            '**Flash Cartridges:**\n' +
+            'Sizes are shown in bytes and bits because cartridge hardware is labelled in bits.\n' +
+            '• Mouse Bite Labs boards: <https://github.com/MouseBiteLabs/Game-Boy-Cartridges>\n\n' +
             `**Version:** ${version}\n` +
             '**Author:** krizdingus\n' +
             '**Website:** <https://krizdingus.com>\n' +
