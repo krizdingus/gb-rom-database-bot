@@ -44,6 +44,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `region:europe`
 - `sort_by:region` sorts on the displayed region, so it groups by actual region
   rather than the two values the header byte can hold
+- Documented examples used dropdown labels where a value is required:
+  `cgb:CGB Only` has a space in it and `cgb:GB/CGB` is not a value either. Both
+  are now `cgb:cgb` and `cgb:both`
+- The README's headline example read `region:Europe`, which matched nothing
+  because the choice value is lowercase. It returns 18 games as `region:europe`
+- The `/dmgdb help` example pairing a Color-only game with Super Game Boy
+  support no longer reads as a contradiction with a shrug. It still is one - and
+  37 homebrew carts still claim both - so it now says that
 
 ### Notes
 

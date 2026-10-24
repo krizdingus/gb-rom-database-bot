@@ -140,8 +140,8 @@ The running bot keeps the list it loaded at startup. To pick up a replacement:
 ## Usage Examples
 
 ```bash
-/dmgdb search query:Pokemon region:Europe mapper:MBC3 battery:true
-/dmgdb random cgb:GB/CGB sgb:false
+/dmgdb search query:Pokemon region:europe mapper:MBC3 battery:true
+/dmgdb random cgb:both sgb:false
 ```
 
 ## Development Roadmap

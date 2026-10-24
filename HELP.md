@@ -34,7 +34,7 @@
 
 - `/dmgdb search "Pokemon"` - Search for Pokemon games
 - `/dmgdb search "Zelda" region:usa` - Search for USA Zelda games
-- `/dmgdb search "Mario" cgb:both battery:true` - Search for CGB Mario games with battery backup
+- `/dmgdb search "Mario" cgb:both battery:true` - Mario games that run on both GB and GBC, with a save battery
 - `/dmgdb random` - Get a random game
 - `/dmgdb random region:japan` - Get a random Japanese game
-- `/dmgdb random cgb:CGB Only sgb:true` - Get a random CGB Only game with SGB support
+- `/dmgdb random cgb:cgb sgb:true` - A Color-only game with Super Game Boy support. Should be impossible; 37 homebrew carts claim it anyway

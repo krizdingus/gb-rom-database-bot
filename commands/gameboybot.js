@@ -181,10 +181,10 @@ module.exports = {
             '**Examples:**\n' +
             '`/dmgdb search "Pokemon"` - Search for Pokemon games\n' +
             '`/dmgdb search "Zelda" region:usa` - Search for USA Zelda games\n' +
-            '`/dmgdb search "Mario" cgb:both battery:true` - Search for CGB Mario games with battery backup\n' +
+            '`/dmgdb search "Mario" cgb:both battery:true` - Mario games that run on both GB and GBC, with a save battery\n' +
             '`/dmgdb random` - Get a random game\n' +
             '`/dmgdb random region:japan` - Get a random Japanese game\n' +
-            '`/dmgdb random cgb:CGB Only sgb:true` - Get a random CGB Only game with SGB support (lol)',
+            '`/dmgdb random cgb:cgb sgb:true` - A Color-only game with Super Game Boy support. Should be impossible; 37 homebrew carts claim it anyway (lol)',
           flags: MessageFlags.Ephemeral,
         });
         break;
