@@ -18,6 +18,7 @@ Welcome to GB ROM Database Bot. Inspired by Catskull's GB Rom Database, I wanted
 - [Data Sources](#data-sources)
 - [Flash Cartridges](#flash-cartridges)
 - [Contributing](#contributing)
+- [License](#license)
 
 ## History & Development
 
@@ -205,7 +206,13 @@ Sizes are shown in bytes and bits because flash cart hardware is labelled in bit
 
 ## Contributing
 
-Pull requests welcome! Run `npm run lint` and `npm run format` before submitting.
+Pull requests welcome! Run `npm run lint`, `npm run format` and `npm test` before submitting.
+
+## License
+
+MIT, see [LICENSE](LICENSE).
+
+[NOTICE](NOTICE) lists the third-party work this is built on.
 
 ---
 

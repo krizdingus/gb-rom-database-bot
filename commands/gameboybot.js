@@ -216,7 +216,8 @@ module.exports = {
             '**Website:** <https://krizdingus.com>\n' +
             '**GitHub:** <https://github.com/krizdingus/gb-rom-database-bot>\n' +
             '**Instagram:** <https://www.instagram.com/krizdingus/>\n' +
-            '**License:** MIT',
+            '**License:** MIT (<https://github.com/krizdingus/gb-rom-database-bot/blob/main/LICENSE>)\n' +
+            'Board designs and documentation \u00a9MouseBiteLabs, CC BY-SA 4.0',
           flags: MessageFlags.Ephemeral,
         });
         break;

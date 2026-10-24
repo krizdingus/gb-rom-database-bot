@@ -1,0 +1,45 @@
+GB ROM Database Bot
+Copyright (c) 2025-2026 Kris Williams
+
+The bot's own code is MIT licensed. See LICENSE.
+
+This file records the third-party work it is built on.
+
+
+Mouse Bite Labs
+---------------
+
+This bot was built to help with Mouse Bite Labs' flash cartridge boards, which
+are linked from the README and from /dmgdb about. The boards and their
+documentation are (c)MouseBiteLabs. Nothing of theirs is reproduced here - the
+links are a credit, not a dependency.
+
+    https://github.com/MouseBiteLabs/Game-Boy-Cartridges
+
+
+No-Intro
+--------
+
+rom-list.json holds cartridge header values read from the ROMs themselves.
+Its filenames follow the naming conventions of the No-Intro project:
+
+    https://no-intro.org
+
+
+libretro-thumbnails
+-------------------
+
+Box art is linked, not redistributed, from the libretro-thumbnails
+repositories, pinned to fixed commits:
+
+    https://github.com/libretro-thumbnails/Nintendo_-_Game_Boy
+    https://github.com/libretro-thumbnails/Nintendo_-_Game_Boy_Color
+
+
+Catskull's GB ROM Database
+--------------------------
+
+Prior art, and the project this bot was originally a reaction to:
+
+    https://catskull.net/gb-rom-database/
+    https://github.com/catskull/gb-rom-database
