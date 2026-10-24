@@ -1,12 +1,5 @@
 // handlers/buttons.js
-const {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  EmbedBuilder,
-  Constants: { InteractionResponseFlags },
-} = require('discord.js');
-const { extractBaseTitle } = require('../loadRomData');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
 const { activeSearches, collectors, updateResultsPage, createRomEmbed } = require('./search');
 
 /**
@@ -23,7 +16,7 @@ async function handleButtonInteraction(interaction) {
   } else {
     await interaction.reply({
       content: 'Your search has expired. Please start a new search.',
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     return;
   }
@@ -44,7 +37,7 @@ async function handleButtonInteraction(interaction) {
         // Can't access the channel
         await interaction.reply({
           content: 'Error: Cannot access channel to share.',
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
         return;
       }
@@ -67,7 +60,7 @@ async function handleButtonInteraction(interaction) {
         // If we haven't used up the interaction yet, we can reply
         await interaction.reply({
           content: 'Error sharing to channel. Please ensure I have permissions to send messages.',
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       } catch (replyError) {
         console.error('Failed to send error message:', replyError);

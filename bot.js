@@ -1,5 +1,5 @@
 // bot.js
-const { Client, GatewayIntentBits, Events } = require('discord.js');
+const { Client, GatewayIntentBits, Events, MessageFlags } = require('discord.js');
 const {
   handleGameBoyBotSearch,
   startCleanupInterval,
@@ -17,7 +17,7 @@ const { execute } = require('./commands/gameboybot');
 async function safeReplyError(interaction, err, label) {
   console.error(`${label} error:`, err);
   if (!interaction.replied && !interaction.deferred) {
-    await interaction.reply({ content: 'An error occurred.', ephemeral: true });
+    await interaction.reply({ content: 'An error occurred.', flags: MessageFlags.Ephemeral });
   }
 }
 

@@ -539,6 +539,7 @@ async function handleGameBoyBotSearch(interaction) {
       await interaction.reply({
         embeds: [embed],
         components: [buttonRow],
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
