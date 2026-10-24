@@ -26,6 +26,13 @@ const client = new Client({
 
 client.once(Events.ClientReady, () => {
   console.log(`Logged in as ${client.user.tag} (GB ROM Database Bot)`);
+
+  // Name the servers this token is connected to. Running a copy against the
+  // wrong token would otherwise look identical at startup, and the first sign
+  // of it would be someone else's server answering.
+  const guilds = client.guilds.cache.map(guild => `${guild.name} (${guild.id})`);
+  console.log(`Serving ${guilds.length} server(s): ${guilds.join(', ') || 'none'}`);
+
   startCleanupInterval();
 });
 

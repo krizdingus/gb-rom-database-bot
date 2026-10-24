@@ -20,6 +20,26 @@ if (!clientId) {
   process.exit(1);
 }
 
+// A half-filled .env would otherwise register commands against whatever the
+// real values happen to be, which is the one mistake worth refusing outright
+for (const [name, value] of [
+  ['BOT_TOKEN', token],
+  ['CLIENT_ID', clientId],
+  ['GUILD_ID', guildId],
+]) {
+  if (value && value.startsWith('PASTE_')) {
+    console.error(`[Config] ${name} is still the placeholder from .env. Fill it in first.`);
+    process.exit(1);
+  }
+}
+
+// Say where these are going before they go there
+console.log(
+  guildId
+    ? `Registering to guild ${guildId} only.`
+    : 'Registering GLOBALLY, to every server this application is in.'
+);
+
 // Register the commands
 (async () => {
   console.log('Starting slash command registration...');

@@ -13,6 +13,13 @@ if (!process.env.CLIENT_ID) {
   process.exit(2);
 }
 
+for (const name of ['BOT_TOKEN', 'CLIENT_ID', 'GUILD_ID']) {
+  if ((process.env[name] || '').startsWith('PASTE_')) {
+    console.error(`Error: ${name} is still the placeholder from .env. Fill it in first.`);
+    process.exit(2);
+  }
+}
+
 // Load ROM data before starting the bot
 const result = loadRomData();
 if (!result.success) {
