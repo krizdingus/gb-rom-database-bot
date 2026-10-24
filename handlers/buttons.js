@@ -30,38 +30,42 @@ async function handleButtonInteraction(interaction) {
       const embed = interaction.message.embeds[0];
       const gameTitle = embed.title;
 
-      // First, get a reference to the channel where we want to share
-      const channelToShareTo = interaction.channel;
-
-      if (!channelToShareTo) {
-        // Can't access the channel
-        await interaction.reply({
-          content: 'Error: Cannot access channel to share.',
-          flags: MessageFlags.Ephemeral,
-        });
-        return;
-      }
-
-      // Send the message to the channel first (using the channel reference)
-      await channelToShareTo.send({
+      const shared = {
         content: `${interaction.user} shared Game Boy game information:`,
         embeds: [embed],
-      });
+      };
 
-      // Then update the original message (this consumes the interaction)
+      // Acknowledge the button first, which also consumes the interaction
       await interaction.update({
         content: `You shared **${gameTitle}** to the channel!`,
         embeds: [embed],
         components: [], // Remove the share button
       });
+
+      // Post publicly through the interaction's own webhook rather than
+      // channel.send(). Interaction follow-ups don't need the bot to hold Send
+      // Messages in the channel, which is what used to make Share fail with
+      // "Error sharing to channel" on servers where the role is locked down.
+      try {
+        await interaction.followUp(shared);
+      } catch (followUpError) {
+        console.error('Follow-up share failed, falling back to channel.send:', followUpError);
+        if (!interaction.channel) throw followUpError;
+        await interaction.channel.send(shared);
+      }
     } catch (error) {
       console.error('Error in share button handler:', error);
+      const notice = {
+        content: 'Error sharing to channel. Please ensure I have permissions to send messages.',
+        flags: MessageFlags.Ephemeral,
+      };
       try {
-        // If we haven't used up the interaction yet, we can reply
-        await interaction.reply({
-          content: 'Error sharing to channel. Please ensure I have permissions to send messages.',
-          flags: MessageFlags.Ephemeral,
-        });
+        // The interaction may already have been consumed by the update above
+        if (interaction.replied || interaction.deferred) {
+          await interaction.followUp(notice);
+        } else {
+          await interaction.reply(notice);
+        }
       } catch (replyError) {
         console.error('Failed to send error message:', replyError);
       }
