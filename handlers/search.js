@@ -7,7 +7,7 @@ const {
   ButtonStyle,
   MessageFlags,
 } = require('discord.js');
-const { extractBaseTitle, loadRomData } = require('../loadRomData');
+const { extractBaseTitle, prepareQuery, loadRomData } = require('../loadRomData');
 // Import the regions module
 const { pickRegionEmoji } = require('../utils/regions');
 const { formatSize } = require('../utils/sizes');
@@ -405,7 +405,7 @@ async function handleGameBoyBotSearch(interaction) {
     const preserveRelevance = interaction.options.getBoolean('preserve_relevance') ?? true;
 
     // Get results from Fuse.js
-    let results = fuseIndex.search(rawQuery).map(result => ({
+    let results = fuseIndex.search(prepareQuery(rawQuery)).map(result => ({
       ...result.item,
       score: result.score, // Preserve the relevance score
     }));

@@ -54,6 +54,37 @@ function reorderArticle(title) {
   return `${m[2]} ${m[1]}${m[3]}`;
 }
 
+// Fuse's minimum matchable term length. With useExtendedSearch on, spaces mean
+// AND, so any term shorter than this makes the whole query match nothing.
+const MIN_MATCH_CHAR_LENGTH = 2;
+
+/**
+ * Prepare a user's query for the index. With extended search enabled a space
+ * separates AND terms, and a term below the minimum length fails, taking the
+ * whole query with it - so "a bug's life" and "bug s life" both found nothing
+ * while "bugs life" worked. Short terms are dropped from plain queries rather
+ * than being allowed to zero out the result.
+ *
+ * Queries using Fuse's extended-search operators are passed through untouched.
+ * @param {string} raw - The query as typed
+ * @returns {string} Query to hand to Fuse
+ */
+function prepareQuery(raw) {
+  if (!raw) return '';
+
+  const terms = raw.trim().split(/\s+/);
+
+  // ' ! ^ = lead a term and $ ends one; | is the OR separator. An apostrophe
+  // inside a word is not an operator, so "a bug's life" is still a plain query.
+  const isOperator = term => /^['!^=]/.test(term) || term.endsWith('$') || term === '|';
+  if (terms.some(isOperator)) return raw;
+
+  const usable = terms.filter(term => term.length >= MIN_MATCH_CHAR_LENGTH);
+
+  // If every term is short the query is all we have, so send it as typed
+  return usable.length > 0 ? usable.join(' ') : raw;
+}
+
 // Function to normalize game titles for better matching
 function normalizeGameTitle(title) {
   if (!title) return '';
@@ -134,7 +165,7 @@ function loadRomData() {
       ],
       threshold: 0.4, // More permissive fuzzy matching
       ignoreLocation: true, // Match anywhere in the string
-      minMatchCharLength: 2, // Allow shorter matches
+      minMatchCharLength: MIN_MATCH_CHAR_LENGTH, // Allow shorter matches
       includeScore: true,
       useExtendedSearch: true, // Enable =exact searches
     };
@@ -162,5 +193,6 @@ module.exports = {
   normalizeString,
   extractBaseTitle,
   reorderArticle,
+  prepareQuery,
   normalizeGameTitle,
 };
